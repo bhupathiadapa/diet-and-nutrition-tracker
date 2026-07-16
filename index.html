@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NouriQuest - Diet & Nutrition Detector</title>
+  <meta name="description" content="NouriQuest is a premium daily diet planner, water tracker, and food nutrition detector for real-time calorie and macro monitoring.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="logo-container">
+        <div class="logo-icon">NQ</div>
+        <div class="logo-text">NouriQuest</div>
+      </div>
+      
+      <nav>
+        <ul class="nav-links">
+          <li class="nav-item active" data-tab="dashboard">
+            <button id="nav-btn-dashboard">
+              <span class="nav-icon" id="icon-dashboard"></span>
+              <span>Dashboard</span>
+            </button>
+          </li>
+          <li class="nav-item" data-tab="log">
+            <button id="nav-btn-log">
+              <span class="nav-icon" id="icon-log"></span>
+              <span>Log Meals</span>
+            </button>
+          </li>
+          <li class="nav-item" data-tab="detector">
+            <button id="nav-btn-detector">
+              <span class="nav-icon" id="icon-detector"></span>
+              <span>Food Detector</span>
+            </button>
+          </li>
+          <li class="nav-item" data-tab="goals">
+            <button id="nav-btn-goals">
+              <span class="nav-icon" id="icon-goals"></span>
+              <span>Goal Planner</span>
+            </button>
+          </li>
+          <li class="nav-item" data-tab="analytics">
+            <button id="nav-btn-analytics">
+              <span class="nav-icon" id="icon-analytics"></span>
+              <span>Analytics</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+      
+      <div class="profile-summary" id="profile-summary-card">
+        <div class="profile-avatar" id="profile-initials">JD</div>
+        <div class="profile-info">
+          <h4 id="profile-name-display">John Doe</h4>
+          <p id="profile-goal-display">Maintain Weight</p>
+        </div>
+      </div>
+    </aside>
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top header bar containing Date Control -->
+      <header class="top-header">
+        <div>
+          <h1 id="view-title">Dashboard</h1>
+          <p id="view-subtitle" style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.25rem;">Your daily health summary at a glance.</p>
+        </div>
+        <div class="date-selector">
+          <button class="date-btn" id="prev-date-btn" aria-label="Previous day"></button>
+          <span class="current-date" id="current-date-display">Today, July 16</span>
+          <button class="date-btn" id="next-date-btn" aria-label="Next day"></button>
+        </div>
+      </header>
+      <!-- ================= DASHBOARD VIEW ================= -->
+      <section id="view-dashboard" class="view-panel active">
+        <div class="grid-container">
+          <div class="left-col">
+            <!-- Calorie Circle Gauge -->
+            <div class="glass-card">
+              <h3 class="card-title"><span id="title-icon-calories"></span>Caloric Intake Tracker</h3>
+              
+              <div class="progress-ring-container">
+                <svg class="ring-outline" width="200" height="200">
+                  <circle class="ring-bg" cx="100" cy="100" r="90" stroke-width="12"></circle>
+                  <circle class="ring-progress" id="calorie-progress-ring" cx="100" cy="100" r="90" stroke-width="12"></circle>
+                </svg>
+                <div class="ring-overlay">
+                  <span class="ring-overlay-val" id="dashboard-calories-remaining">2,000</span>
+                  <span class="ring-overlay-lbl">kcal left</span>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-around; text-align: center; margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                <div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary);">Goal Target</div>
+                  <div style="font-size: 1.1rem; font-weight: 600;" id="dashboard-calories-goal">2,000</div>
+                </div>
+                <div>
+                  <div style="font-size: 0.8rem; color: var(--text-secondary);">Logged Food</div>
+                  <div style="font-size: 1.1rem; font-weight: 600; color: var(--color-calories);" id="dashboard-calories-consumed">0</div>
+                </div>
+              </div>
+            </div>
+            <!-- Macronutrient Stats Grid -->
+            <div class="dashboard-summary-grid">
+              <div class="stat-box protein">
+                <span class="stat-label">Protein</span>
+                <span class="stat-value" id="dashboard-protein-val">0g</span>
+                <span class="stat-target" id="dashboard-protein-target">of 150g</span>
+              </div>
+              <div class="stat-box carbs">
+                <span class="stat-label">Carbs</span>
+                <span class="stat-value" id="dashboard-carbs-val">0g</span>
+                <span class="stat-target" id="dashboard-carbs-target">of 225g</span>
+              </div>
+              <div class="stat-box fat">
+                <span class="stat-label">Fat</span>
+                <span class="stat-value" id="dashboard-fat-val">0g</span>
+                <span class="stat-target" id="dashboard-fat-target">of 65g</span>
+              </div>
+              <div class="stat-box fiber">
+                <span class="stat-label">Fiber</span>
+                <span class="stat-value" id="dashboard-fiber-val">0g</span>
+                <span class="stat-target" id="dashboard-fiber-target">of 30g</span>
+              </div>
+            </div>
+            <!-- Quick Meal Logger Overview -->
+            <div class="glass-card">
+              <h3 class="card-title"><span id="title-icon-quicklog"></span>Quick Logs Summary</h3>
+              <div id="dashboard-quicklog-empty" style="text-align: center; padding: 2rem 0; color: var(--text-secondary);">
+                No meals logged today yet. Log some meals to track your progress!
+              </div>
+              <div id="dashboard-quicklog-list" style="display: none;">
+                <!-- Filled dynamically via app.js -->
+              </div>
+            </div>
+          </div>
+          <div class="right-col">
+            <!-- Water Tracker -->
+            <div class="glass-card water-tracker">
+              <h3 class="card-title" style="align-self: flex-start;"><span id="title-icon-water"></span>Hydration</h3>
+              <div class="water-visualizer">
+                <div class="water-wave" id="water-wave-element"></div>
+              </div>
+              <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.25rem;" id="water-logged-display">0 ml</div>
+              <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.25rem;">Daily target: <span id="water-goal-display">2500</span> ml</div>
+              
+              <div class="water-controls">
+                <button class="water-btn" id="add-water-250">+250ml</button>
+                <button class="water-btn" id="add-water-500">+500ml</button>
+                <button class="water-btn" id="reset-water-btn" style="background: rgba(236,72,153,0.1); color: var(--color-fat);">Reset</button>
+              </div>
+            </div>
+            <!-- Smart Suggestions and Health Tips -->
+            <div class="glass-card">
+              <h3 class="card-title"><span id="title-icon-tips"></span>Nutrition Insights</h3>
+              <div class="tips-container" id="dashboard-tips-container">
+                <!-- Dynamically rendered custom feedback insights based on macro values -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ================= MEAL DIARY LOG VIEW ================= -->
+      <section id="view-log" class="view-panel">
+        <div class="grid-container">
+          <div class="left-col">
+            <div class="glass-card">
+              <h3 class="card-title">Daily Food Journal</h3>
+              <div class="meal-sections">
+                <!-- Breakfast Card -->
+                <div class="meal-card meal-breakfast">
+                  <div class="meal-header">
+                    <span class="meal-name">Breakfast</span>
+                    <span class="meal-calories-summary" id="breakfast-calories-summary">0 kcal</span>
+                  </div>
+                  <ul class="meal-items-list" id="breakfast-items-list">
+                    <!-- Dynamically populated -->
+                  </ul>
+                  <button class="add-meal-item-btn" id="add-item-btn-breakfast">
+                    <span class="add-btn-icon" id="plus-icon-breakfast"></span> Add Breakfast Item
+                  </button>
+                </div>
+                <!-- Lunch Card -->
+                <div class="meal-card meal-lunch">
+                  <div class="meal-header">
+                    <span class="meal-name">Lunch</span>
+                    <span class="meal-calories-summary" id="lunch-calories-summary">0 kcal</span>
+                  </div>
+                  <ul class="meal-items-list" id="lunch-items-list">
+                    <!-- Dynamically populated -->
+                  </ul>
+                  <button class="add-meal-item-btn" id="add-item-btn-lunch">
+                    <span class="add-btn-icon" id="plus-icon-lunch"></span> Add Lunch Item
+                  </button>
+                </div>
+                <!-- Dinner Card -->
+                <div class="meal-card meal-dinner">
+                  <div class="meal-header">
+                    <span class="meal-name">Dinner</span>
+                    <span class="meal-calories-summary" id="dinner-calories-summary">0 kcal</span>
+                  </div>
+                  <ul class="meal-items-list" id="dinner-items-list">
+                    <!-- Dynamically populated -->
+                  </ul>
+                  <button class="add-meal-item-btn" id="add-item-btn-dinner">
+                    <span class="add-btn-icon" id="plus-icon-dinner"></span> Add Dinner Item
+                  </button>
+                </div>
+                <!-- Snacks Card -->
+                <div class="meal-card meal-snacks">
+                  <div class="meal-header">
+                    <span class="meal-name">Snacks</span>
+                    <span class="meal-calories-summary" id="snacks-calories-summary">0 kcal</span>
+                  </div>
+                  <ul class="meal-items-list" id="snacks-items-list">
+                    <!-- Dynamically populated -->
+                  </ul>
+                  <button class="add-meal-item-btn" id="add-item-btn-snacks">
+                    <span class="add-btn-icon" id="plus-icon-snacks"></span> Add Snack Item
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="right-col">
+            <!-- Mini Day Macro Summary -->
+            <div class="glass-card">
+              <h3 class="card-title">Day Total Nutrient Summary</h3>
+              <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                    <span>Calories</span>
+                    <span id="log-cal-summary">0 / 2000 kcal</span>
+                  </div>
+                  <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                    <div id="log-cal-bar" style="width: 0%; height: 100%; background: var(--color-calories); border-radius: 3px; transition: width 0.4s ease;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                    <span>Protein</span>
+                    <span id="log-protein-summary">0 / 150g</span>
+                  </div>
+                  <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                    <div id="log-protein-bar" style="width: 0%; height: 100%; background: var(--color-protein); border-radius: 3px; transition: width 0.4s ease;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                    <span>Carbohydrates</span>
+                    <span id="log-carbs-summary">0 / 225g</span>
+                  </div>
+                  <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                    <div id="log-carbs-bar" style="width: 0%; height: 100%; background: var(--color-carbs); border-radius: 3px; transition: width 0.4s ease;"></div>
+                  </div>
+                </div>
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                    <span>Fat</span>
+                    <span id="log-fat-summary">0 / 65g</span>
+                  </div>
+                  <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                    <div id="log-fat-bar" style="width: 0%; height: 100%; background: var(--color-fat); border-radius: 3px; transition: width 0.4s ease;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ================= FOOD DETECTOR & ESTIMATOR VIEW ================= -->
+      <section id="view-detector" class="view-panel">
+        <div class="detector-container">
+          <!-- Text Parser -->
+          <div class="glass-card">
+            <h3 class="card-title">Smart Meal Detector</h3>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+              Type a description of your meal in plain English. The parser will estimate weights, match foods from our database, and compute totals.
+            </p>
+            
+            <div class="form-group">
+              <label class="form-label" for="nlp-food-input">Describe your meal:</label>
+              <textarea class="form-control nlp-textarea" id="nlp-food-input" placeholder="e.g., 2 eggs, 1 slice whole wheat bread, 1 medium banana, and a cup of black coffee"></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+              <button class="btn-primary" id="nlp-parse-btn" style="flex: 1;">Detect & Parse Meal</button>
+              <button class="water-btn" id="nlp-clear-btn">Clear</button>
+            </div>
+            <div class="nlp-examples">
+              <span class="nlp-example-tag" data-text="2 boiled eggs, 1 slice whole wheat bread, 1 medium banana">🍳 Breakfast Combo</span>
+              <span class="nlp-example-tag" data-text="150g grilled chicken breast, 1 cup white rice, 1 tbsp olive oil">🍗 Chicken & Rice</span>
+              <span class="nlp-example-tag" data-text="1 slice pizza, 1 glass cola">🍕 Pizza cheat meal</span>
+              <span class="nlp-example-tag" data-text="1 medium apple, 2 tbsp peanut butter">🍎 Apple & PB</span>
+            </div>
+          </div>
+          <!-- Parse results & log to journal -->
+          <div class="glass-card">
+            <h3 class="card-title">Detection Output</h3>
+            <div class="parsed-results-box" id="parsed-results-box">
+              <div style="text-align: center; color: var(--text-muted); font-size: 0.9rem;" id="detector-empty-state">
+                Enter your meal details on the left and click "Detect & Parse Meal".
+              </div>
+              <div id="detector-results-content" style="display: none; width: 100%;">
+                <div id="detector-parsed-rows">
+                  <!-- Generated dynamically -->
+                </div>
+                <div class="parsed-total-footer">
+                  <span>Total Calories:</span>
+                  <span id="detector-total-calories">0 kcal</span>
+                </div>
+                
+                <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem; align-items: flex-end;">
+                  <div class="form-group" style="margin-bottom: 0; flex: 1;">
+                    <label class="form-label" for="detector-meal-select">Add to Meal Journal Category:</label>
+                    <select class="form-control" id="detector-meal-select">
+                      <option value="Breakfast">Breakfast</option>
+                      <option value="Lunch" selected>Lunch</option>
+                      <option value="Dinner">Dinner</option>
+                      <option value="Snacks">Snacks</option>
+                    </select>
+                  </div>
+                  <button class="btn-primary" id="detector-log-btn" style="height: 42px;">Log to Journal</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Food Finder Database Search -->
+        <div class="glass-card" style="margin-top: 1.5rem;">
+          <h3 class="card-title">Food Nutrition Database Lookup</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Lookup detailed macronutrients per serving size in our offline nutritional library.
+          </p>
+          
+          <div class="food-search-box">
+            <input type="text" class="form-control" id="food-search-input" placeholder="Search foods... e.g., Salmon, Oatmeal, Almonds, Broccoli" autocomplete="off">
+            <div class="search-results" id="food-search-results">
+              <!-- Dynamically populated lookup items -->
+            </div>
+          </div>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button class="water-btn" id="open-custom-food-modal" style="border-style: dashed; padding: 0.75rem 1.25rem;">
+              <span>+ Add Custom Food Definition</span>
+            </button>
+          </div>
+        </div>
+      </section>
+      <!-- ================= DIET GOAL PLANNER VIEW ================= -->
+      <section id="view-goals" class="view-panel">
+        <div class="grid-container">
+          <div class="left-col">
+            <div class="glass-card">
+              <h3 class="card-title">Personal Profile & Target Goals</h3>
+              <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Calculate your basal metabolic rate (BMR) and daily targets automatically based on your body composition and physical goals.
+              </p>
+              <form id="goal-planner-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="goal-weight">Current Weight (kg):</label>
+                    <input type="number" class="form-control" id="goal-weight" min="30" max="250" value="70" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="goal-height">Height (cm):</label>
+                    <input type="number" class="form-control" id="goal-height" min="100" max="250" value="175" required>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="goal-age">Age (years):</label>
+                    <input type="number" class="form-control" id="goal-age" min="12" max="100" value="28" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="goal-gender">Gender:</label>
+                    <select class="form-control" id="goal-gender">
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="goal-activity">Daily Activity Level:</label>
+                  <select class="form-control" id="goal-activity">
+                    <option value="sedentary">Sedentary (Little to no exercise)</option>
+                    <option value="light" selected>Lightly Active (1-3 days/week light exercise)</option>
+                    <option value="moderate">Moderately Active (3-5 days/week moderate sports)</option>
+                    <option value="active">Very Active (6-7 days/week hard exercise)</option>
+                    <option value="extra">Extra Active (Professional athlete / physical job)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="goal-target">Diet Goal / Target:</label>
+                  <select class="form-control" id="goal-target">
+                    <option value="lose_mild">Mild Weight Loss (0.25 kg/week)</option>
+                    <option value="lose" selected>Weight Loss (0.5 kg/week)</option>
+                    <option value="maintain">Maintain Weight / Balance</option>
+                    <option value="gain">Weight Gain (0.5 kg/week)</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn-primary" id="save-goals-btn">Calculate & Update Daily Plan</button>
+              </form>
+            </div>
+          </div>
+          <div class="right-col">
+            <!-- Calorie & Macro Target Breakdown -->
+            <div class="glass-card">
+              <h3 class="card-title">Daily Nutrition Plan</h3>
+              <div style="display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1rem;" id="goals-summary-container">
+                <!-- Dynamically updated macro targets breakdown details -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ================= ANALYTICS VIEW ================= -->
+      <section id="view-analytics" class="view-panel">
+        <div class="glass-card">
+          <h3 class="card-title"><span id="title-icon-chart"></span>Weekly Calorie Intake Trend</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+            Visualize your total calorie logs compared to your active target over the last 7 days.
+          </p>
+          <!-- SVG Chart -->
+          <div style="position: relative; width: 100%; height: 260px;" id="analytics-calories-chart-box">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+        <div class="grid-container" style="margin-top: 1.5rem;">
+          <!-- Hydration Tracker chart -->
+          <div class="glass-card">
+            <h3 class="card-title">Weekly Hydration Level</h3>
+            <div style="position: relative; width: 100%; height: 180px;" id="analytics-water-chart-box">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+          <!-- Macro Split Pie Representation -->
+          <div class="glass-card">
+            <h3 class="card-title">Macronutrient Calories Split</h3>
+            <div style="position: relative; width: 100%; height: 180px; display: flex; align-items: center;" id="analytics-macro-split-box">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <!-- Modal: Add Food Item Manually -->
+  <div class="modal-backdrop" id="add-food-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title-context">Log Breakfast Item</h3>
+        <button class="modal-close" id="close-log-modal-btn">&times;</button>
+      </div>
+      <form id="manual-log-form">
+        <!-- Hidden Category tracker -->
+        <input type="hidden" id="manual-log-category">
+        
+        <div class="form-group">
+          <label class="form-label" for="manual-log-name">Food Name:</label>
+          <input type="text" class="form-control" id="manual-log-name" placeholder="e.g., Scrambled Eggs" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="manual-log-servings">Servings Count / Weight:</label>
+            <input type="number" step="0.1" class="form-control" id="manual-log-servings" value="1" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="manual-log-unit">Serving Size (Unit):</label>
+            <input type="text" class="form-control" id="manual-log-unit" value="large" placeholder="e.g. g, cup, slice" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="manual-log-calories">Calories (kcal):</label>
+            <input type="number" class="form-control" id="manual-log-calories" min="0" value="140" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="manual-log-protein">Protein (g):</label>
+            <input type="number" class="form-control" id="manual-log-protein" min="0" value="12" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="manual-log-carbs">Carbohydrates (g):</label>
+            <input type="number" class="form-control" id="manual-log-carbs" min="0" value="1" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="manual-log-fat">Fat (g):</label>
+            <input type="number" class="form-control" id="manual-log-fat" min="0" value="10" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="manual-log-fiber">Fiber (g) - Optional:</label>
+          <input type="number" class="form-control" id="manual-log-fiber" min="0" value="0">
+        </div>
+        <button type="submit" class="btn-primary" id="manual-log-submit-btn">Log Item to Journal</button>
+      </form>
+    </div>
+  </div>
+  <!-- Modal: Add New Custom Food definition to DB -->
+  <div class="modal-backdrop" id="custom-food-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Create Custom Food</h3>
+        <button class="modal-close" id="close-custom-modal-btn">&times;</button>
+      </div>
+      <form id="custom-food-definition-form">
+        <div class="form-group">
+          <label class="form-label" for="custom-food-name">Food Name / Description:</label>
+          <input type="text" class="form-control" id="custom-food-name" placeholder="e.g., Whey Protein Shake" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="custom-food-size">Serving Size Metric:</label>
+            <input type="number" class="form-control" id="custom-food-size" value="100" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="custom-food-unit">Serving Size Unit:</label>
+            <input type="text" class="form-control" id="custom-food-unit" value="g" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="custom-food-calories">Calories (kcal) per serving:</label>
+            <input type="number" class="form-control" id="custom-food-calories" min="0" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="custom-food-protein">Protein (g) per serving:</label>
+            <input type="number" class="form-control" id="custom-food-protein" min="0" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="custom-food-carbs">Carbohydrates (g) per serving:</label>
+            <input type="number" class="form-control" id="custom-food-carbs" min="0" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="custom-food-fat">Fat (g) per serving:</label>
+            <input type="number" class="form-control" id="custom-food-fat" min="0" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="custom-food-fiber">Fiber (g) per serving:</label>
+          <input type="number" class="form-control" id="custom-food-fiber" min="0" value="0">
+        </div>
+        <button type="submit" class="btn-primary">Add Food to Offline Database</button>
+      </form>
+    </div>
+  </div>
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container-div"></div>
+  <!-- Scripts -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
